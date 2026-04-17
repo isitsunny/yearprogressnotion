@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #111; color: #eee; }
+      .dot.future { background: #444; }
+      .dot.today { box-shadow: 0 0 0 2px #111, 0 0 0 3.5px #eee; }
+    }
+
+    .wrap { max-width: 560px; width: 100%; }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 4px;
+    }
+
+    .stats {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .pct {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+    }
+
+    .dayinfo {
+      font-size: 14px;
+      opacity: 0.4;
+    }
+
+    #grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.past   { background: currentColor; opacity: 0.8; }
+    .dot.today  { background: currentColor; opacity: 1; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px currentColor; }
+    .dot.future { background: #ccc; opacity: 0.5; }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      opacity: 0.45;
+    }
+
+    .legend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.past   { background: currentColor; opacity: 0.8; }
+    .legend-dot.today  { background: currentColor; box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px currentColor; }
+    .legend-dot.future { background: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="label">2026</p>
+    <div class="stats">
+      <span class="pct" id="pct">—</span>
+      <span class="dayinfo" id="dayinfo"></span>
+    </div>
+    <div id="grid"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot past"></div> passed</div>
+      <div class="legend-item"><div class="legend-dot today"></div> today</div>
+      <div class="legend-item"><div class="legend-dot future"></div> ahead</div>
+    </div>
+  </div>
+
+  <script>
+    const now = new Date();
+    const year = now.getFullYear();
+    const start = new Date(year, 0, 1);
+    const end   = new Date(year + 1, 0, 1);
+    const total = Math.round((end - start) / 86400000);
+    const day   = Math.floor((now - start) / 86400000) + 1;
+    const pct   = ((day - 1) / total * 100).toFixed(1);
+
+    document.getElementById('pct').textContent     = pct + '%';
+    document.getElementById('dayinfo').textContent = `day ${day} of ${total}`;
+
+    const grid = document.getElementById('grid');
+    for (let i = 1; i <= total; i++) {
+      const d    = document.createElement('div');
+      const cls  = i < day ? 'past' : i === day ? 'today' : 'future';
+      d.className = `dot ${cls}`;
+      const date = new Date(year, 0, i);
+      d.title = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      grid.appendChild(d);
+    }
+  </script>
+</body>
+</html>
